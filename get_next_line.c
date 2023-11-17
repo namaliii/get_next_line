@@ -6,7 +6,7 @@
 /*   By: anamieta <anamieta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 17:38:16 by anamieta          #+#    #+#             */
-/*   Updated: 2023/11/16 19:55:44 by anamieta         ###   ########.fr       */
+/*   Updated: 2023/11/17 18:09:47 by anamieta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,10 +75,10 @@ char	*read_line(int *pos, int fd, char *line)
 
 	if (!line)
 		line = ft_calloc(1, sizeof(char));
-	buffer = ft_calloc(BUFFER_SIZE + 1; sizeof(char));
+	buffer = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
 	while (*pos > 0)
 	{
-		*pos = read(fd, buffer, BUFFER_SIZE)
+		*pos = read(fd, buffer, BUFFER_SIZE);
 		if (*pos == -1)
 			return (free(buffer), NULL);
 		buffer[*pos] = '\0';
@@ -113,4 +113,31 @@ char	*get_next_line(int fd)
 	res = get_result(line, bytes_read);
 	line = new_line(line, bytes_read);
 	return (res);
+}
+
+#include <fcntl.h>
+#include <stdio.h>
+int main() {
+    int file = open("s.txt", 'r');
+    if (file < 0) {
+        printf("Failed to open the file.\n");
+        return 1;
+    }
+    char* line;
+    // Read the first line
+    line = get_next_line(file);
+    if (line) {
+        printf("first line: %s\n", line);
+    }
+    while (line)
+	{
+		line = get_next_line(file);
+		if (line)
+		{
+			printf("next line: %s\n", line);
+		}
+	}
+    // Clean up
+    close(file);
+    return 0;
 }
