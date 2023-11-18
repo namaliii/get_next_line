@@ -6,13 +6,14 @@
 /*   By: anamieta <anamieta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/15 17:38:16 by anamieta          #+#    #+#             */
-/*   Updated: 2023/11/17 19:29:51 by anamieta         ###   ########.fr       */
+/*   Updated: 2023/11/18 16:43:34 by anamieta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*read_and_concatenate(int *bytes_read, int fd, char *line) // what is the line
+char	*read_and_concatenate(int *bytes_read, int fd, char *line)
+// what is the line
 {
 	char	*buffer;
 	char	*concatenated;
@@ -27,7 +28,8 @@ char	*read_and_concatenate(int *bytes_read, int fd, char *line) // what is the l
 		*bytes_read = read(fd, buffer, BUFFER_SIZE);
 		if (*bytes_read == -1)
 			return (free(buffer), NULL);
-		buffer[*bytes_read] = '\0'; // its failing tests if I get rid of this line, but why do we need it if we used calloc?
+		buffer[*bytes_read] = '\0';
+// its failing tests if I get rid of this line, but why do we need it if we used calloc?
 		concatenated = ft_strjoin(line, buffer);
 		free (line);
 		line = concatenated;
