@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: anamieta <anamieta@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/15 17:38:16 by anamieta          #+#    #+#             */
-/*   Updated: 2023/12/01 12:51:42 by anamieta         ###   ########.fr       */
+/*   Created: 2023/12/01 11:56:30 by anamieta          #+#    #+#             */
+/*   Updated: 2023/12/01 12:51:50 by anamieta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*read_and_concatenate(int *bytes_read, int fd, char *line)
 {
@@ -96,49 +96,71 @@ char	*allocate_new_line(char *line, int bytes_read)
 
 char	*get_next_line(int fd)
 {
-	static char	*line;
+	static char	*line[OPEN_MAX];
 	char		*result;
 	int			bytes_read;
 
 	bytes_read = 1;
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 	{
-		free(line);
-		line = NULL;
+		free(line[fd]);
+		line[fd] = NULL;
 		return (NULL);
 	}
-	line = read_and_concatenate(&bytes_read, fd, line);
-	if (!line)
+	line[fd] = read_and_concatenate(&bytes_read, fd, line[fd]);
+	if (!line[fd])
 		return (NULL);
-	bytes_read = get_line_len(line);
-	result = get_result(line, bytes_read);
-	line = allocate_new_line(line, bytes_read);
+	bytes_read = get_line_len(line[fd]);
+	result = get_result(line[fd], bytes_read);
+	line[fd] = allocate_new_line(line[fd], bytes_read);
 	return (result);
 }
 
 // #include <fcntl.h>
 // #include <stdio.h>
 // int main() {
-//     int file = open("s.txt", 'r');
-//     if (file < 0) {
-//         printf("Failed to open the file.\n");
+//     int file1 = open("s.txt", 'r');
+// 	printf("fd for file1: %d\n", file1);
+// 	int file2 = open("c.txt", 'r');
+// 	printf("fd for file2: %d\n\n", file2);
+//     if (file1 < 0) {
+//         printf("Failed to open the file1.\n");
 //         return 1;
 //     }
-//     char* line;
-//     // Read the first line
-//     line = get_next_line(file);
-//     if (line) {
-//         printf("first line: %s\n", line);
+// 	if (file2 < 0) {
+//         printf("Failed to open the file2.\n");
+//         return 1;
 //     }
-//     while (line)
+//     char* line1;
+// 	char* line2;
+//     // Read the first line
+//     line1 = get_next_line(file1);
+//     line2 = get_next_line(file2);
+//     if (line1) {
+//         printf("first line1: %s", line1);
+//     }
+// 	    while (line1)
 // 	{
-// 		line = get_next_line(file);
-// 		if (line)
+// 		line1 = get_next_line(file1);
+// 		if (line1)
 // 		{
-// 			printf("next line: %s\n", line);
+// 			printf("next line1: %s", line1);
+// 		}
+// 	}
+// 	printf("\n");
+// 	if (line2) {
+//         printf("first line2: %s", line2);
+//     }
+// 	while (line2)
+// 	{
+// 	line2 = get_next_line(file2);
+// 		if (line2)
+// 		{
+// 			printf("next line2: %s", line2);
 // 		}
 // 	}
 //     // Clean up
-//     close(file);
+//     close(file1);
+// 	close(file2);
 //     return 0;
 // }
